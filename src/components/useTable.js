@@ -53,7 +53,7 @@ export default function useTable(records, headCells,filterFn) {
                                 <TableSortLabel
                                     active={orderBy === headCell.id}
                                     direction={orderBy === headCell.id ? order : 'asc'}
-                                    onClick={() => { handleSortRequest(headCell.id) }}>
+                                    onClick={() => { handleSortRequest("t"+headCell.id) }}>
                                     {headCell.label}
                                 </TableSortLabel>
                             }
@@ -82,8 +82,11 @@ export default function useTable(records, headCells,filterFn) {
         onChangeRowsPerPage={handleChangeRowsPerPage}
     />)
 
+    
+
     function stableSort(array, comparator) {
         const stabilizedThis = array.map((el, index) => [el, index]);
+        console.log(stabilizedThis,array,orderBy);
         stabilizedThis.sort((a, b) => {
             const order = comparator(a[0], b[0]);
             if (order !== 0) return order;
@@ -107,6 +110,7 @@ export default function useTable(records, headCells,filterFn) {
         }
         return 0;
     }
+    console.log(orderBy);
 
     const recordsAfterPagingAndSorting = () => {
         return stableSort(filterFn.fn(records), getComparator(order, orderBy))

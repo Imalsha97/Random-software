@@ -7,13 +7,13 @@ import Table from 'react-bootstrap/Table';
 import { useNavigate,useParams } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Card from 'react-bootstrap/Card';
+import Controls from '../../components/controls/Controls';
 
-const options = [
-    { key: 1, text: "pendind", value: "pending" },
-    { key: 2, text: "inprogress", value: "inprogress" },
-    { key: 3, text: "completed", value: "completed" }
-  ];
-
+export const getStatus = () => ([
+  { id: '1', title: 'pending' },
+  { id: '2', title: 'inprogress' },
+  { id: '3', title: 'completed' }
+])
 
 export const UpdateTodo = () => {
     const navigate = useNavigate();
@@ -22,7 +22,8 @@ export const UpdateTodo = () => {
     const [tTitle ,setTitle] = useState("");
     const [tStatus ,setStatus] = useState("");
     const [options ,setOptions] = useState([]);
-    const [value , setValue] = useState(id);
+    const [isEdited, setIsEdited] = useState(false);
+   
     
 
     useEffect(() => {
@@ -30,7 +31,7 @@ export const UpdateTodo = () => {
             axios.get("http://localhost:4000/todo/get/"+id).then((res)=>{
                 setTitle(res.data.todo.tTitle);
                 setStatus(res.data.todo.tStatus);
-                console.log(res.data.todo.tTitle,res.data.todo.tStatus,"yyyyyyyyy")
+                //console.log(res.data.todo.tTitle,res.data.todo.tStatus,"yyyyyyyyy")
                 
             }).catch((err)=>{
                // alert(err);
@@ -53,13 +54,18 @@ export const UpdateTodo = () => {
             tTitle,tStatus
         }
         console.log(newTodo,"hhhhhhhh");
-        axios.put("http://localhost:4000/todo/update/"+id,{tTitle,tStatus}).then(() => {
-           navigate("/")
+        axios.put("http://localhost:4000/todo/update/"+id,newTodo).then(() => {
+           //navigate("/")
+           setIsEdited(true)
         }).catch((err)=>{
             // alert(err);
         })
 
     }
+    const handleInputChange = e => {
+      setStatus(e.target.value);
+      
+  }
 
 
   return (
@@ -76,8 +82,17 @@ export const UpdateTodo = () => {
         />
       </Form.Group>
 
+      <Controls.Select
+                        name=""
+                        label="Status"
+                        value={tStatus}
+                        onChange={handleInputChange}
+                        options={getStatus()}
+                        
+                    />
+
       
-      <Dropdown >
+      {/* <Dropdown >
       <Dropdown.Toggle variant="success" id="dropdown-basic">
         Dropdown Button
       </Dropdown.Toggle>
@@ -87,14 +102,15 @@ export const UpdateTodo = () => {
         <Dropdown.Item onClick={(e) => {setStatus(e)}}href="inprogress"> InProgress</Dropdown.Item>
         <Dropdown.Item onClick={(e) => {setStatus(e)}}href="completed">Completed</Dropdown.Item>
       </Dropdown.Menu>
-    </Dropdown>
+    </Dropdown> */}
     <Container style={{margin:'20px'}}>
     <Button style={{backgroundColor:'#51087E'}} variant="primary" type="submit">
         Edit
       </Button>
       </Container>
     </Form>
-    <Card style={{ width: '18rem',marginTop:"100px" }}>
+    {
+      isEdited && <Card style={{ width: '18rem',marginTop:"100px" }}>
       
       <Card.Body>
         <Card.Title>Congratulation</Card.Title>
@@ -102,9 +118,10 @@ export const UpdateTodo = () => {
           Some quick example text to build on the card title and make up the
           bulk of the card's content.
         </Card.Text>
-        <Button variant="primary">Ok</Button>
+        <Button  onClick={()=>navigate('/')} variant="primary">Ok</Button>
       </Card.Body>
     </Card>
+    }
     </Container>
    
       

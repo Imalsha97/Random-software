@@ -68,7 +68,7 @@ export default function AllTodos() {
     function sendData(e){
         e.preventDefault();
         const newTodo = {
-            tTitle,tStatus:"Pending"
+            tTitle,tStatus:"pending"
         }
         axios.post("http://localhost:4000/todo/add",newTodo).then(() => {
             alert("todo added");
@@ -98,12 +98,12 @@ export default function AllTodos() {
             }
         })
     }
-
+ 
     
 
     
     const onDelete = id => {
-        console.log("hhhhhhh",id)
+       
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
